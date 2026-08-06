@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     # local 
     'core',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [str(BASE_DIR.joinpath('templates'))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -108,6 +109,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Authentication backends
+
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.UsernameOrPhoneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
@@ -141,3 +150,10 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+
+# accounts config
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'

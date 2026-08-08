@@ -10,4 +10,4 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
-    list_display = ['username', 'phone_number']
+    list_display = ('username', 'phone_number', )

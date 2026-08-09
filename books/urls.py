@@ -11,4 +11,7 @@ urlpatterns = [
     path('category/<slug:slug>/', views.CategoryDetailView.as_view(), name='category_detail'),
     path('author/<slug:slug>/', views.AuthorDetailView.as_view(), name='author_detail'),
     path('publisher/<slug:slug>/', views.PublisherDetailView.as_view(), name='publisher_detail'),
+    path('comment/<int:book_id>', views.ReviewCreateView.as_view(), name='comment_create'),
+    path('wishlist/', views.WishlistListView.as_view(), name='wishlist_list'),
+    path('wishlist/toggle/<int:book_id>/', views.wishlist_toggle, name='wishlist_toggle'),
 ]

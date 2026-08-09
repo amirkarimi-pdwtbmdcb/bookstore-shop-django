@@ -15,6 +15,14 @@ class Cart(TimeStampedModel):
     def __str__(self):
         return f'Cart #{self.pk}'
 
+    @property
+    def total_price(self):
+        return sum(item.book.price * item.quantity for item in self.items.all())
+
+    @property
+    def total_items(self):
+        return sum(item.quantity for item in self.items.all())
+
 
 class CartItem(TimeStampedModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')

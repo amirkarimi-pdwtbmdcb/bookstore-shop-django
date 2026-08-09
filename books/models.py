@@ -1,3 +1,6 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.conf import settings
+from django.urls import reverse
 from django.db import models
 
 from core.models import TimeStampedModel
@@ -91,3 +94,41 @@ class Book(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('product_detail', args=[self.slug])
+
+    @property
+    def average_rating(self):
+        result = self.reviews.filter(is_approved=True).aggregate(models.Avg('rating'))
+        return round(result['rating__avg'] or 0, 1)
+
+
+class Review(TimeStampedModel):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
+    comment = models.TextField()
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    is_approved = models.BooleanField(default=False)
+
+    class Meta:
+        constraints = [
+        models.UniqueConstraint(
+            fields=['book', 'user'],
+            name="unique_review_per_user_book"
+        )
+    ]
+
+
+class WishList(TimeStampedModel):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='wishlisted_by')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorites')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'book'],
+                name='unique_wishlist_per_user_book'
+            )
+        ]
+    

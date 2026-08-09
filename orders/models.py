@@ -1,5 +1,7 @@
-from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 from django.conf import settings
+from django.db import models
 
 from core.models import TimeStampedModel
 from books.models import Book
@@ -34,6 +36,11 @@ class Order(TimeStampedModel):
 
     order_notes = models.CharField('Order Notes', max_length=700,null=True, blank=True)
 
+    coupon = models.ForeignKey(
+        'Coupon', on_delete=models.SET_NULL, null=True, blank=True, related_name='orders'
+    )
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=0, default=0)
+
     def __str__(self):
         return f"Order #{self.id}"
 
@@ -46,3 +53,26 @@ class OrderItem(TimeStampedModel):
 
     def __str__(self):
         return f"OrderItem {self.id} of order {self.order.id}"
+
+
+class Coupon(TimeStampedModel):
+    code = models.CharField(max_length=50, unique=True)
+    discount_percent = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(100)]
+    )
+    valid_from = models.DateTimeField()
+    valid_to = models.DateTimeField()
+    usage_limit = models.PositiveIntegerField()
+    times_used = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.code
+
+    def is_valid(self):
+        now = timezone.now()
+        return (
+            self.is_active
+            and self.valid_from <= now <= self.valid_to
+            and self.times_used < self.usage_limit
+        )

@@ -17,9 +17,9 @@ class Cart(TimeStampedModel):
 
 
 class CartItem(TimeStampedModel):
-     = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
-     = models.ForeignKey(Book, on_delete=models.CASCADE)
-     = models.PositiveIntegerField(default=1)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
 
     class Meta:
         unique_together = ('cart', 'book')

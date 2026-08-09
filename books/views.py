@@ -1,7 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
 from django.views import generic
 from django.db.models import Q
 
-from .models import Book, Category, Author, Publisher
+from .models import Book, Category, Author, Publisher, Review, WishList
+from .forms import ReviewForm
 
 
 class BookListView(generic.ListView):
@@ -65,6 +69,11 @@ class BookDetailView(generic.DetailView):
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reviews'] = self.object.reviews.filter(is_approved=True)
+        return context
+
 
 class CategoryDetailView(generic.DetailView):
     model = Category
@@ -97,3 +106,37 @@ class PublisherDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         context['books'] = self.object.books.filter(is_active=True)
         return context
+
+
+class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Review
+    form_class = ReviewForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        book = get_object_or_404(Book, id=self.kwargs['book_id'])
+        form.instance.book = book
+
+        if Review.objects.filter(user=self.request.user, book=book).exists():
+            form.add_error(None, "You have already reviewed this book.")
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
+
+
+@login_required
+def wishlist_toggle(request, book_id):
+    book = get_object_or_404(Book, id=book_id, is_active=True)
+    item, created = WishList.objects.get_or_create(user=request.user, book=book)
+    if not created:
+        item.delete()
+    return redirect('books:book_detail', slug=book.slug)
+
+
+class WishlistListView(LoginRequiredMixin, generic.ListView):
+    model = WishList
+    context_object_name = 'wishlist_items'
+    template_name = 'books/wishlist_list.html'
+
+    def get_queryset(self):
+        return WishList.objects.filter(user=self.request.user).select_related('book')

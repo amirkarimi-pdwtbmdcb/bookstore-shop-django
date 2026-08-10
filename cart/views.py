@@ -12,7 +12,9 @@ class CartDetailView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cart'] = get_or_create_cart(self.request)
+        cart = get_or_create_cart(self.request)
+        context['cart'] = cart
+        context['cart_items'] = cart.items.select_related('book')
         return context
 
 

@@ -137,6 +137,7 @@ class WishlistListView(LoginRequiredMixin, generic.ListView):
     model = WishList
     context_object_name = 'wishlist_items'
     template_name = 'books/wishlist_list.html'
+    paginate_by = 12
 
     def get_queryset(self):
         return WishList.objects.filter(user=self.request.user).select_related('book')

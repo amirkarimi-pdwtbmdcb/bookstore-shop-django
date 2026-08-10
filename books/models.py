@@ -1,9 +1,17 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.urls import reverse
 from django.db import models
 
 from core.models import TimeStampedModel
+
+
+def validate_file_size(value):
+    max_size_mb = 20
+    if value.size > max_size_mb * 1024 * 1024:
+        raise ValidationError(f'حجم فایل نباید بیشتر از {max_size_mb} مگابایت باشد')
 
 
 class Category(TimeStampedModel):
@@ -74,7 +82,10 @@ class Book(TimeStampedModel):
         max_digits=10, decimal_places=0, null=True, blank=True
     )
 
-    cover_image = models.ImageField(upload_to='books/covers/')
+    cover_image = models.ImageField(
+        upload_to='books/covers/',
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp']), validate_file_size]
+    )
 
     isbn = models.CharField(max_length=20, blank=True)
     language = models.CharField(max_length=50, default='فارسی')
@@ -82,7 +93,8 @@ class Book(TimeStampedModel):
 
     stock = models.PositiveIntegerField(default=0)
     digital_file = models.FileField(
-        upload_to='books/files/', null=True, blank=True
+    upload_to='books/files/', null=True, blank=True,
+    validators=[FileExtensionValidator(allowed_extensions=['pdf', 'epub']), validate_file_size]
     )
 
     is_active = models.BooleanField(default=True)

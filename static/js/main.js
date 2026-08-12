@@ -1,5 +1,3 @@
-// کتاب‌فروشی — رفتارهای ساده سمت کاربر (بدون فریم‌ورک)
-
 document.addEventListener('DOMContentLoaded', function () {
   // باز/بسته کردن منو موبایل
   var navToggle = document.querySelector('.nav-toggle');

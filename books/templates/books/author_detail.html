@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load store_extras %}
+
+{% block title %}{{ author.name }} — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <nav class="text-sm text-muted mb-4">
+    <a href="{% url 'books:book_list' %}">همه‌ی کتاب‌ها</a> / {{ author.name }}
+  </nav>
+
+  <div class="page-header">
+    <span class="eyebrow">نویسنده</span>
+    <div class="row gap-3">
+      <span class="avatar" style="width:48px;height:48px;font-size:1.1rem;">{{ author.name|slice:":1" }}</span>
+      <h1>{{ author.name }}</h1>
+    </div>
+    {% if author.bio %}<p class="text-muted mt-3">{{ author.bio }}</p>{% endif %}
+    <p class="text-muted text-sm mt-2">{{ books|length }} کتاب از این نویسنده</p>
+  </div>
+
+  {% if books %}
+    <div class="book-grid">
+      {% for book in books %}
+        {% include 'books/_book_card.html' %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+      </svg>
+      <h3>هنوز کتابی از این نویسنده ثبت نشده</h3>
+      <a href="{% url 'books:book_list' %}" class="btn btn-primary mt-4">مشاهده‌ی همه‌ی کتاب‌ها</a>
+    </div>
+  {% endif %}
+{% endblock %}

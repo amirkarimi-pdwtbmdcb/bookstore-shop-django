@@ -22,7 +22,7 @@ def create_order_from_cart(user, cart, shipping_info):
         try:
             coupon = Coupon.objects.get(code=coupon_code)
         except Coupon.DoesNotExist:
-            raise ValidationError('کد تخفیف نامعتبره')
+            raise ValidationError('کد تخفیف نامعتبر است')
 
         if not coupon.is_valid():
             raise ValidationError('کد تخفیف منقضی شده یا دیگه معتبر نیست')

@@ -21,6 +21,13 @@ class CheckoutView(LoginRequiredMixin, generic.FormView):
             return redirect('cart:cart_detail')
         return super().get(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart = get_or_create_cart(self.request)
+        context['cart'] = cart
+        context['cart_items'] = cart.items.select_related('book')
+        return context
+
     def form_valid(self, form):
         cart = get_or_create_cart(self.request)
         try:

@@ -31,9 +31,13 @@ class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
 class SignUpView(generic.CreateView):
     form_class = CustomUserCreationForm
     template_name = "registration/signup.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("books:book_list")
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        login(self.request, self.object)
+        login(
+            self.request,
+            self.object,
+            backend='accounts.backends.UsernameOrPhoneBackend',
+        )
         return response

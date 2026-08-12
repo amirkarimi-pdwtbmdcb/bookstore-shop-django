@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}کتاب‌فروشی{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}فروش کتاب‌های فیزیکی و الکترونیک{% endblock %}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% include 'includes/navbar.html' %}
+
+  <main>
+    <div class="container page-section">
+      {% include 'includes/messages.html' %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  {% include 'includes/footer.html' %}
+
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

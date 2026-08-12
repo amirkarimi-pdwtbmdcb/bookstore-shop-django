@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 from django.db.models import Sum
 
 from orders.models import Order
-from books.models import Review, WishList
+from books.models import Review, WishList, Book
 
 
 User = get_user_model()

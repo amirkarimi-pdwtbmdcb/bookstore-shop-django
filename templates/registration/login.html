@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}ورود — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <div class="card card-pad" style="max-width: 420px; margin-inline: auto;">
+    <span class="eyebrow">خوش اومدی</span>
+    <h2 class="mb-4">ورود به حساب</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="field">
+        <label for="{{ form.username.id_for_label }}">نام کاربری یا شماره موبایل</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.password.id_for_label }}">رمز عبور</label>
+        {{ form.password }}
+        {{ form.password.errors }}
+      </div>
+
+      <input type="hidden" name="next" value="{{ next }}">
+
+      <button type="submit" class="btn btn-primary btn-block mt-3">ورود</button>
+    </form>
+
+    <div class="row between mt-4 text-sm">
+      <a href="{% url 'password_reset' %}" class="link">فراموشی رمز عبور</a>
+      <a href="{% url 'accounts:signup' %}" class="link">هنوز حساب نداری؟ ثبت‌نام کن</a>
+    </div>
+  </div>
+{% endblock %}

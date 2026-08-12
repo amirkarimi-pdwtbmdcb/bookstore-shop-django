@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}پروفایل من — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <span class="eyebrow">حساب کاربری</span>
+    <h1>پروفایل من</h1>
+  </div>
+
+  <div class="card card-pad" style="max-width: 560px;">
+    <div class="row gap-3 mb-4">
+      <span class="avatar" style="width:48px;height:48px;font-size:1.1rem;">{{ profile_user.username|slice:":1" }}</span>
+      <div>
+        <strong>{{ profile_user.username }}</strong>
+        <p class="text-muted text-sm">عضو از {{ profile_user.date_joined|date:"Y/m/d" }}</p>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><td>نام</td><td>{{ profile_user.first_name|default:"—" }}</td></tr>
+      <tr><td>نام خانوادگی</td><td>{{ profile_user.last_name|default:"—" }}</td></tr>
+      <tr><td>ایمیل</td><td>{{ profile_user.email|default:"—" }}</td></tr>
+      <tr><td>شماره موبایل</td><td>{{ profile_user.phone_number }}</td></tr>
+    </table>
+
+    <div class="row gap-2 mt-5">
+      <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary">ویرایش پروفایل</a>
+      <a href="{% url 'password_change' %}" class="btn btn-outline">تغییر رمز عبور</a>
+    </div>
+  </div>
+
+  <div class="row gap-3 mt-4" style="max-width: 560px;">
+    <a href="{% url 'orders:order_list' %}" class="card card-pad" style="flex:1;">
+      <strong>سفارش‌های من</strong>
+      <p class="text-muted text-sm mt-2">مشاهده تاریخچه‌ی سفارش‌ها</p>
+    </a>
+    <a href="{% url 'books:wishlist_list' %}" class="card card-pad" style="flex:1;">
+      <strong>علاقه‌مندی‌ها</strong>
+      <p class="text-muted text-sm mt-2">کتاب‌هایی که ذخیره کردی</p>
+    </a>
+  </div>
+{% endblock %}

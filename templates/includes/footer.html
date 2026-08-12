@@ -1,0 +1,40 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>کتاب‌فروشی</h4>
+        <p class="text-sm">فروش کتاب‌های فیزیکی و الکترونیک، با تحویل سریع و پشتیبانی همیشگی.</p>
+      </div>
+      <div>
+        <h4>دسترسی سریع</h4>
+        <div class="stack gap-2">
+          <a href="{% url 'books:book_list' %}">همه‌ی کتاب‌ها</a>
+          <a href="{% url 'cart:cart_detail' %}">سبد خرید</a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'books:wishlist_list' %}">علاقه‌مندی‌ها</a>
+          {% endif %}
+        </div>
+      </div>
+      <div>
+        <h4>حساب کاربری</h4>
+        <div class="stack gap-2">
+          {% if user.is_authenticated %}
+            <a href="{% url 'accounts:profile' %}">پروفایل من</a>
+            <a href="{% url 'orders:order_list' %}">سفارش‌های من</a>
+          {% else %}
+            <a href="{% url 'login' %}">ورود</a>
+            <a href="{% url 'accounts:signup' %}">ثبت‌نام</a>
+          {% endif %}
+        </div>
+      </div>
+      <div>
+        <h4>پشتیبانی</h4>
+        <p class="text-sm">پاسخ‌گویی هر روز از ساعت ۹ تا ۲۱</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© {% now "Y" %} کتاب‌فروشی. تمامی حقوق محفوظ است.</span>
+      <span>ساخته‌شده با Django</span>
+    </div>
+  </div>
+</footer>

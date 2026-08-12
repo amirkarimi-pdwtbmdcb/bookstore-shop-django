@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load store_extras %}
+
+{% block title %}{{ publisher.name }} — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <nav class="text-sm text-muted mb-4">
+    <a href="{% url 'books:book_list' %}">همه‌ی کتاب‌ها</a> / {{ publisher.name }}
+  </nav>
+
+  <div class="page-header">
+    <span class="eyebrow">ناشر</span>
+    <h1>{{ publisher.name }}</h1>
+    <p class="text-muted text-sm mt-2">{{ books|length }} کتاب از این ناشر</p>
+  </div>
+
+  {% if books %}
+    <div class="book-grid">
+      {% for book in books %}
+        {% include 'books/_book_card.html' %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+      </svg>
+      <h3>هنوز کتابی از این ناشر ثبت نشده</h3>
+      <a href="{% url 'books:book_list' %}" class="btn btn-primary mt-4">مشاهده‌ی همه‌ی کتاب‌ها</a>
+    </div>
+  {% endif %}
+{% endblock %}

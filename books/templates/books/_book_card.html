@@ -1,0 +1,38 @@
+{% load store_extras %}
+<article class="book-card">
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'books:wishlist_toggle' book.id %}">
+      {% csrf_token %}
+      <button type="submit" class="bookmark-toggle {% if book|in_wishlist:user %}is-active{% endif %}" aria-label="افزودن به علاقه‌مندی‌ها">
+        <svg viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg"><path d="M2 1h20v29l-10-8-10 8V1z"/></svg>
+      </button>
+    </form>
+  {% endif %}
+
+  <a href="{{ book.get_absolute_url }}" class="book-card__cover-wrap">
+    {% if book.cover_image %}
+      <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" loading="lazy">
+    {% endif %}
+    <span class="badge {% if book.book_type == 'digital' %}badge-primary{% else %}badge-muted{% endif %} book-card__type">
+      {{ book.get_book_type_display }}
+    </span>
+  </a>
+
+  <a href="{{ book.get_absolute_url }}">
+    <h4 class="book-card__title">{{ book.title }}</h4>
+  </a>
+  {% with author=book.authors.first %}
+    {% if author %}<p class="book-card__author">{{ author.name }}</p>{% endif %}
+  {% endwith %}
+
+  <div class="book-card__footer">
+    <div class="book-card__price">
+      {% if book.discount_price %}
+        {{ book.discount_price|price }}
+        <del>{{ book.price|price }}</del>
+      {% else %}
+        {{ book.price|price }}
+      {% endif %}
+    </div>
+  </div>
+</article>

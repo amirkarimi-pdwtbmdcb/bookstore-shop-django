@@ -1,0 +1,12 @@
+{% load i18n %}
+<span class="stars" aria-label="امتیاز {{ value }} از ۵">
+  {% for _ in full_range %}
+    <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.5-4.2 6.1-.7z"/></svg>
+  {% endfor %}
+  {% if half %}
+    <svg viewBox="0 0 20 20"><defs><linearGradient id="half-fill"><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="transparent"/></linearGradient></defs><path fill="url(#half-fill)" stroke="currentColor" stroke-width="0.6" d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.5-4.2 6.1-.7z"/></svg>
+  {% endif %}
+  {% for _ in empty_range %}
+    <svg class="is-empty" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.5-4.2 6.1-.7z"/></svg>
+  {% endfor %}
+</span>

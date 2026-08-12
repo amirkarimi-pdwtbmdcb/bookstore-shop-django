@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load store_extras %}
+
+{% block title %}سفارش‌های من — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <span class="eyebrow">حساب کاربری</span>
+    <h1>سفارش‌های من</h1>
+  </div>
+
+  {% if orders %}
+    <div class="stack gap-3">
+      {% for order in orders %}
+        <a href="{% url 'orders:order_detail' order.pk %}" class="card card-pad row between">
+          <div>
+            <strong>سفارش #{{ order.id }}</strong>
+            <p class="text-muted text-sm mt-2">{{ order.created_at|date:"Y/m/d - H:i" }}</p>
+          </div>
+          <div class="row gap-3">
+            <span class="badge {% if order.status == 'delivered' %}badge-success{% elif order.status == 'cancelled' %}badge-danger{% else %}badge-primary{% endif %}">
+              {{ order.get_status_display }}
+            </span>
+            <strong>{{ order.total_price|price }}</strong>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+    {% include 'includes/pagination.html' %}
+  {% else %}
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16l-1.5 12a2 2 0 01-2 1.8H7.5a2 2 0 01-2-1.8L4 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></svg>
+      <h3>هنوز سفارشی ثبت نکردی</h3>
+      <a href="{% url 'books:book_list' %}" class="btn btn-primary mt-4">مشاهده‌ی کتاب‌ها</a>
+    </div>
+  {% endif %}
+{% endblock %}

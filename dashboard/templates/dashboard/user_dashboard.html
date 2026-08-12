@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load store_extras %}
+
+{% block title %}داشبورد — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <span class="eyebrow">حساب کاربری</span>
+    <h1>سلام {{ user.username }} 👋</h1>
+  </div>
+
+  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+    <div class="card card-pad">
+      <div class="row between mb-4">
+        <h3>سفارش‌های اخیر</h3>
+        <a href="{% url 'orders:order_list' %}" class="text-sm link">مشاهده همه</a>
+      </div>
+      {% if recent_orders %}
+        <div class="stack gap-3">
+          {% for order in recent_orders %}
+            <a href="{% url 'orders:order_detail' order.pk %}" class="row between text-sm">
+              <span>سفارش #{{ order.id }}</span>
+              <span class="badge {% if order.status == 'delivered' %}badge-success{% elif order.status == 'cancelled' %}badge-danger{% else %}badge-primary{% endif %}">
+                {{ order.get_status_display }}
+              </span>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted text-sm">هنوز سفارشی ثبت نکردی.</p>
+      {% endif %}
+    </div>
+
+    <div class="card card-pad">
+      <div class="row between mb-4">
+        <h3>علاقه‌مندی‌ها</h3>
+        <a href="{% url 'books:wishlist_list' %}" class="text-sm link">مشاهده همه</a>
+      </div>
+      {% if wishlist_items %}
+        <div class="stack gap-3">
+          {% for item in wishlist_items|slice:":5" %}
+            <a href="{{ item.book.get_absolute_url }}" class="row between text-sm">
+              <span>{{ item.book.title }}</span>
+              <span class="text-muted">{{ item.book.price|price }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted text-sm">هنوز کتابی به علاقه‌مندی‌ها اضافه نکردی.</p>
+      {% endif %}
+    </div>
+
+    <div class="card card-pad">
+      <h3 class="mb-4">نظرات من</h3>
+      {% if reviews %}
+        <div class="stack gap-3">
+          {% for review in reviews|slice:":5" %}
+            <div>
+              <div class="row between">
+                <a href="{{ review.book.get_absolute_url }}" class="text-sm"><strong>{{ review.book.title }}</strong></a>
+                {% star_rating review.rating %}
+              </div>
+              {% if not review.is_approved %}<span class="badge badge-muted text-xs mt-2">در انتظار تایید</span>{% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted text-sm">هنوز نظری ثبت نکردی.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

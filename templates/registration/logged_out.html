@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}خروج از حساب — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <div class="card card-pad text-center" style="max-width: 420px; margin-inline: auto;">
+    <h2>با موفقیت خارج شدی</h2>
+    <p class="text-muted mt-2">هر وقت خواستی می‌تونی دوباره وارد بشی.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary mt-4">ورود دوباره</a>
+  </div>
+{% endblock %}

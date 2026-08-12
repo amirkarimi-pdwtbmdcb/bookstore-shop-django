@@ -1,0 +1,81 @@
+{% load static %}
+<header class="site-header">
+  <div class="container site-header__bar">
+    <a href="{% url 'books:book_list' %}" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+          <path d="M4 5.2c2-1 4.5-1 6.5 0v13.6c-2-1-4.5-1-6.5 0V5.2z"/>
+          <path d="M20 5.2c-2-1-4.5-1-6.5 0v13.6c2-1 4.5-1 6.5 0V5.2z"/>
+        </svg>
+      </span>
+      کتاب‌فروشی
+    </a>
+
+    <button class="nav-toggle icon-btn" type="button" aria-label="باز کردن منو">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M3 6h18M3 12h18M3 18h18"/>
+      </svg>
+    </button>
+
+    <form class="search-form" method="get" action="{% url 'books:book_list' %}">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+        </svg>
+        <input type="search" name="q" placeholder="جست‌وجوی کتاب، نویسنده یا ناشر…" value="{{ request.GET.q|default:'' }}">
+      </div>
+    </form>
+
+    <nav class="main-nav">
+      <a href="{% url 'books:book_list' %}">همه‌ی کتاب‌ها</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'orders:order_list' %}">سفارش‌های من</a>
+      {% endif %}
+    </nav>
+
+    <div class="header-icons">
+      {% if user.is_authenticated %}
+        <a href="{% url 'books:wishlist_list' %}" class="icon-btn" aria-label="علاقه‌مندی‌ها">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+            <path d="M6 3.5h12v17l-6-4-6 4v-17z"/>
+          </svg>
+        </a>
+      {% endif %}
+
+      <a href="{% url 'cart:cart_detail' %}" class="icon-btn" aria-label="سبد خرید">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h2l2.4 12.2a2 2 0 002 1.8h8.2a2 2 0 002-1.8L21 8H6"/>
+          <circle cx="10" cy="21" r="1.4" fill="currentColor" stroke="none"/>
+          <circle cx="17" cy="21" r="1.4" fill="currentColor" stroke="none"/>
+        </svg>
+        {% if nav_cart.total_items %}<span class="icon-count">{{ nav_cart.total_items }}</span>{% endif %}
+      </a>
+
+      {% if user.is_authenticated %}
+        <details class="account-menu">
+          <summary class="icon-btn" aria-label="حساب کاربری">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="12" cy="8" r="3.4"/>
+              <path d="M5 20c1.3-3.6 4-5.4 7-5.4s5.7 1.8 7 5.4"/>
+            </svg>
+          </summary>
+          <div class="dropdown">
+            <a href="{% url 'dashboard:user_dashboard' %}">داشبورد</a>
+            <a href="{% url 'accounts:profile' %}">پروفایل</a>
+            <a href="{% url 'orders:order_list' %}">سفارش‌های من</a>
+            {% if user.is_staff %}
+              <a href="{% url 'dashboard:admin_dashboard' %}">داشبورد مدیریت</a>
+            {% endif %}
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit">خروج</button>
+            </form>
+          </div>
+        </details>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-ghost btn-sm">ورود</a>
+        <a href="{% url 'accounts:signup' %}" class="btn btn-primary btn-sm">ثبت‌نام</a>
+      {% endif %}
+    </div>
+  </div>
+</header>

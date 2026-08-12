@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}ثبت‌نام — کتاب‌فروشی{% endblock %}
+{% block title %}ویرایش پروفایل — کتاب‌فروشی{% endblock %}
 
 {% block content %}
-  <div class="card card-pad" style="max-width: 420px; margin-inline: auto;">
-    <span class="eyebrow">به کتاب‌فروشی خوش اومدی</span>
-    <h2 class="mb-4">ساخت حساب کاربری</h2>
+  <div class="page-header">
+    <span class="eyebrow">حساب کاربری</span>
+    <h1>ویرایش پروفایل</h1>
+  </div>
 
+  <div class="card card-pad" style="max-width: 480px;">
     <form method="post">
       {% csrf_token %}
       {% if form.non_field_errors %}
         <div class="form-errors">{{ form.non_field_errors }}</div>
       {% endif %}
-
       {% for field in form %}
         <div class="field">
           <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -21,12 +22,10 @@
           {{ field.errors }}
         </div>
       {% endfor %}
-
-      <button type="submit" class="btn btn-primary btn-block mt-3">ثبت‌نام</button>
+      <div class="row gap-2 mt-4">
+        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+        <a href="{% url 'accounts:profile' %}" class="btn btn-ghost">انصراف</a>
+      </div>
     </form>
-
-    <p class="text-sm mt-4">
-      قبلاً حساب ساختی؟ <a href="{% url 'login' %}" class="link">وارد شو</a>
-    </p>
   </div>
 {% endblock %}

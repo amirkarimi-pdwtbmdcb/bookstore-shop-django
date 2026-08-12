@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load store_extras %}
+
+{% block title %}سبد خرید — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <span class="eyebrow">خرید</span>
+    <h1>سبد خرید</h1>
+  </div>
+
+  {% if cart_items %}
+    <div class="cart-layout">
+      <div class="stack gap-3">
+        {% for item in cart_items %}
+          <div class="card card-pad cart-row">
+            <a href="{{ item.book.get_absolute_url }}" class="cart-row__cover">
+              {% if item.book.cover_image %}
+                <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }}">
+              {% endif %}
+            </a>
+
+            <div class="cart-row__info">
+              <a href="{{ item.book.get_absolute_url }}"><strong>{{ item.book.title }}</strong></a>
+              <p class="text-muted text-sm mt-2">{{ item.book.get_book_type_display }}</p>
+              <p class="book-card__price mt-2">{{ item.book.price|price }}</p>
+            </div>
+
+            <form method="post" action="{% url 'cart:cart_update' item.id %}" class="cart-row__qty">
+              {% csrf_token %}
+              <div class="qty-input">
+                <button type="button" data-qty="minus">−</button>
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
+                       {% if item.book.book_type == 'physical' %}max="{{ item.book.stock }}"{% endif %}>
+                <button type="button" data-qty="plus">+</button>
+              </div>
+              <button type="submit" class="btn btn-outline btn-sm mt-2 btn-block">به‌روزرسانی</button>
+            </form>
+
+            <form method="post" action="{% url 'cart:cart_remove' item.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-ghost btn-icon" aria-label="حذف از سبد">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0l1 13a1 1 0 001 1h6a1 1 0 001-1l1-13"/></svg>
+              </button>
+            </form>
+          </div>
+        {% endfor %}
+
+        <form method="post" action="{% url 'cart:cart_clear' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-ghost btn-sm">خالی کردن سبد خرید</button>
+        </form>
+      </div>
+
+      <aside class="card card-pad cart-summary">
+        <h3 class="mb-4">خلاصه سفارش</h3>
+        <div class="row between mb-2">
+          <span class="text-muted">تعداد کالا</span>
+          <span>{{ cart.total_items }}</span>
+        </div>
+        <div class="row between mb-4">
+          <span class="text-muted">جمع کل</span>
+          <strong>{{ cart.total_price|price }}</strong>
+        </div>
+        <a href="{% url 'orders:checkout' %}" class="btn btn-primary btn-block">تسویه‌حساب</a>
+      </aside>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h2l2.4 12.2a2 2 0 002 1.8h8.2a2 2 0 002-1.8L21 8H6"/></svg>
+      <h3>سبد خریدت خالیه</h3>
+      <p>یه سری تو کتاب‌ها بزن و چیزی که دوست داری رو اضافه کن.</p>
+      <a href="{% url 'books:book_list' %}" class="btn btn-primary mt-4">مشاهده‌ی کتاب‌ها</a>
+    </div>
+  {% endif %}
+{% endblock %}

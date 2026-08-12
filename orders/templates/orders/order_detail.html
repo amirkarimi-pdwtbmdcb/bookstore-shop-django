@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load store_extras %}
+
+{% block title %}سفارش #{{ order.id }} — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <span class="eyebrow">سفارش #{{ order.id }}</span>
+    <h1 class="row gap-3">
+      سفارش #{{ order.id }}
+      <span class="badge {% if order.status == 'delivered' %}badge-success{% elif order.status == 'cancelled' %}badge-danger{% else %}badge-primary{% endif %}" style="font-size:0.8rem;">
+        {{ order.get_status_display }}
+      </span>
+    </h1>
+    <p class="text-muted mt-2">ثبت‌شده در {{ order.created_at|date:"Y/m/d - H:i" }}</p>
+  </div>
+
+  <div class="cart-layout">
+    <div class="stack gap-3">
+      <div class="card card-pad">
+        <h3 class="mb-3">اقلام سفارش</h3>
+        {% for item in order.items.all %}
+          <div class="row between mb-2 text-sm">
+            <span>{{ item.book.title }} × {{ item.quantity }}</span>
+            <span>{{ item.price|price }}</span>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="card card-pad">
+        <h3 class="mb-3">اطلاعات ارسال</h3>
+        <table class="spec-table">
+          <tr><td>نام گیرنده</td><td>{{ order.full_name }}</td></tr>
+          <tr><td>شماره تماس</td><td>{{ order.phone_number }}</td></tr>
+          {% if order.address %}
+            <tr><td>استان / شهر</td><td>{{ order.province }}، {{ order.city }}</td></tr>
+            <tr><td>آدرس</td><td>{{ order.address }}</td></tr>
+            <tr><td>کد پستی</td><td>{{ order.postal_code|default:"—" }}</td></tr>
+          {% endif %}
+          {% if order.order_notes %}
+            <tr><td>یادداشت</td><td>{{ order.order_notes }}</td></tr>
+          {% endif %}
+        </table>
+      </div>
+    </div>
+
+    <aside class="card card-pad cart-summary">
+      <h3 class="mb-4">خلاصه پرداخت</h3>
+      {% if order.discount_amount %}
+        <div class="row between mb-2 text-sm">
+          <span class="text-muted">تخفیف</span>
+          <span>−{{ order.discount_amount|price }}</span>
+        </div>
+      {% endif %}
+      <div class="row between mb-3">
+        <span class="text-muted">جمع کل</span>
+        <strong>{{ order.total_price|price }}</strong>
+      </div>
+      <span class="badge {% if order.payment_status == 'paid' %}badge-success{% elif order.payment_status == 'failed' %}badge-danger{% else %}badge-muted{% endif %}">
+        {{ order.get_payment_status_display }}
+      </span>
+    </aside>
+  </div>
+{% endblock %}

@@ -108,7 +108,7 @@ class Book(TimeStampedModel):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('product_detail', args=[self.slug])
+        return reverse('books:book_detail', kwargs={'slug': self.slug})
 
     @property
     def average_rating(self):
@@ -130,6 +130,9 @@ class Review(TimeStampedModel):
             name="unique_review_per_user_book"
         )
     ]
+
+    def get_absolute_url(self):
+        return reverse('books:book_detail', kwargs={'slug': self.book.slug})
 
 
 class WishList(TimeStampedModel):

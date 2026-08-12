@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load store_extras %}
+
+{% block title %}{% if request.GET.q %}نتایج جست‌وجو برای «{{ request.GET.q }}»{% else %}همه‌ی کتاب‌ها{% endif %} — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+
+  <div class="page-header">
+    <span class="eyebrow">کتابخانه</span>
+    <h1>{% if request.GET.q %}نتایج جست‌وجو برای «{{ request.GET.q }}»{% else %}همه‌ی کتاب‌ها{% endif %}</h1>
+    <p class="text-muted">{{ page_obj.paginator.count|default:books.count }} کتاب پیدا شد</p>
+  </div>
+
+  <div class="catalog-layout">
+    <aside class="filters card card-pad">
+      <form method="get">
+        {% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}">{% endif %}
+
+        <div class="filter-group">
+          <h4>نوع کتاب</h4>
+          <label class="filter-option">
+            <input type="radio" name="book_type" value="" {% if not request.GET.book_type %}checked{% endif %}> همه
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="book_type" value="physical" {% if request.GET.book_type == 'physical' %}checked{% endif %}> فیزیکی
+          </label>
+          <label class="filter-option">
+            <input type="radio" name="book_type" value="digital" {% if request.GET.book_type == 'digital' %}checked{% endif %}> دیجیتال
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <h4>دسته‌بندی</h4>
+          <select name="category">
+            <option value="">همه‌ی دسته‌ها</option>
+            {% for c in categories %}
+              <option value="{{ c.slug }}" {% if request.GET.category == c.slug %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <h4>نویسنده</h4>
+          <select name="author">
+            <option value="">همه‌ی نویسنده‌ها</option>
+            {% for a in authors %}
+              <option value="{{ a.slug }}" {% if request.GET.author == a.slug %}selected{% endif %}>{{ a.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <h4>ناشر</h4>
+          <select name="publisher">
+            <option value="">همه‌ی ناشرها</option>
+            {% for p in publishers %}
+              <option value="{{ p.slug }}" {% if request.GET.publisher == p.slug %}selected{% endif %}>{{ p.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <h4>بازه قیمت (تومان)</h4>
+          <div class="price-range">
+            <input type="number" name="min_price" placeholder="از" value="{{ request.GET.min_price }}" min="0">
+            <input type="number" name="max_price" placeholder="تا" value="{{ request.GET.max_price }}" min="0">
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <h4>مرتب‌سازی</h4>
+          <select name="sort">
+            <option value="">جدیدترین</option>
+            <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>ارزان‌ترین</option>
+            <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>گران‌ترین</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block mt-3">اعمال فیلتر</button>
+        <a href="{% url 'books:book_list' %}" class="btn btn-ghost btn-block mt-2">حذف فیلترها</a>
+      </form>
+    </aside>
+
+    <div>
+      {% if books %}
+        <div class="book-grid">
+          {% for book in books %}
+            {% include 'books/_book_card.html' %}
+          {% endfor %}
+        </div>
+        {% include 'includes/pagination.html' %}
+      {% else %}
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <h3>کتابی پیدا نشد</h3>
+          <p>فیلترها رو تغییر بده یا جست‌وجوی دیگه‌ای امتحان کن.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}

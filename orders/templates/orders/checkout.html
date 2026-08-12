@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load store_extras %}
+
+{% block title %}تسویه‌حساب — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <span class="eyebrow">مرحله آخر</span>
+    <h1>تسویه‌حساب</h1>
+  </div>
+
+  <div class="cart-layout">
+    <div class="card card-pad">
+      <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="form-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <h3 class="mb-3">اطلاعات ارسال</h3>
+        {% for field in form %}
+          {% if field.name != 'order_notes' and field.name != 'coupon_code' %}
+            <div class="field">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {{ field.errors }}
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        <h3 class="mb-3 mt-5">کد تخفیف (اختیاری)</h3>
+        <div class="field">
+          {{ form.coupon_code }}
+          {{ form.coupon_code.errors }}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.order_notes.id_for_label }}">{{ form.order_notes.label }}</label>
+          {{ form.order_notes }}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block mt-4">ثبت نهایی سفارش</button>
+      </form>
+    </div>
+
+    <aside class="card card-pad cart-summary">
+      <h3 class="mb-4">خلاصه سفارش</h3>
+      <div class="stack gap-2 mb-4">
+        {% for item in cart_items %}
+          <div class="row between text-sm">
+            <span class="text-muted">{{ item.book.title }} × {{ item.quantity }}</span>
+            <span>{{ item.book.price|price }}</span>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="row between" style="border-top:1px solid var(--color-border); padding-top: var(--space-3);">
+        <span class="text-muted">جمع کل</span>
+        <strong>{{ cart.total_price|price }}</strong>
+      </div>
+    </aside>
+  </div>
+{% endblock %}

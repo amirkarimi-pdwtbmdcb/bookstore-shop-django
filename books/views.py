@@ -61,6 +61,13 @@ class BookListView(generic.ListView):
 
         return queryset.distinct()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        context['authors'] = Author.objects.all()
+        context['publishers'] = Publisher.objects.all()
+        return context
+
     
 class BookDetailView(generic.DetailView):
     model = Book
@@ -111,6 +118,7 @@ class PublisherDetailView(generic.DetailView):
 class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
     model = Review
     form_class = ReviewForm
+    template_name = 'books/review_form.html'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -120,6 +128,9 @@ class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
         if Review.objects.filter(user=self.request.user, book=book).exists():
             form.add_error(None, "You have already reviewed this book.")
             return self.form_invalid(form)
+
+        self.book = book
+
 
         return super().form_valid(form)
 

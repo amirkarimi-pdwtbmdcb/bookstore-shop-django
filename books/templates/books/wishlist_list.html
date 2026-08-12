@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load store_extras %}
+
+{% block title %}علاقه‌مندی‌ها — کتاب‌فروشی{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <span class="eyebrow">حساب کاربری</span>
+    <h1>علاقه‌مندی‌های من</h1>
+  </div>
+
+  {% if wishlist_items %}
+    <div class="book-grid">
+      {% for item in wishlist_items %}
+        {% with book=item.book %}
+          {% include 'books/_book_card.html' %}
+        {% endwith %}
+      {% endfor %}
+    </div>
+    {% include 'includes/pagination.html' %}
+  {% else %}
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3.5h12v17l-6-4-6 4v-17z"/></svg>
+      <h3>هنوز کتابی به علاقه‌مندی‌ها اضافه نکردی</h3>
+      <p>رو نشانک هر کتاب بزن تا اینجا ذخیره‌ش کنی.</p>
+      <a href="{% url 'books:book_list' %}" class="btn btn-primary mt-4">مشاهده‌ی کتاب‌ها</a>
+    </div>
+  {% endif %}
+{% endblock %}

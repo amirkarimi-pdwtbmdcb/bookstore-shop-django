@@ -41,7 +41,7 @@ def create_order_from_cart(user, cart, shipping_info):
     for cart_item in cart.items.select_related('book'):
         book = cart_item.book
 
-        if book.book_type == Book.PHYSICAL:
+        if book.book_type == Book.BookType.PHYSICAL:
             if book.stock < cart_item.quantity:
                 raise ValidationError(f'موجودی «{book.title}» کافی نیست')
             book.stock -= cart_item.quantity

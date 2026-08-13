@@ -12,6 +12,20 @@ class Cart(TimeStampedModel):
     )
     session_key = models.CharField(max_length=40, null=True, blank=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user'],
+                condition=models.Q(user__isnull=False),
+                name='unique_cart_per_user',
+            ),
+            models.UniqueConstraint(
+                fields=['session_key'],
+                condition=models.Q(session_key__isnull=False),
+                name='unique_cart_per_session',
+            ),
+        ]
+
     def __str__(self):
         return f'Cart #{self.pk}'
 

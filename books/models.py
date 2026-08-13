@@ -1,5 +1,4 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.core.validators import FileExtensionValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, FileExtensionValidator
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.urls import reverse

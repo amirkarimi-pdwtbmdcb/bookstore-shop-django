@@ -76,6 +76,9 @@ class BookDetailView(generic.DetailView):
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
 
+    def get_queryset(self):
+        return Book.objects.filter(is_active=True)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reviews'] = self.object.reviews.filter(is_approved=True)

@@ -25,6 +25,7 @@ class UserDashboardView(LoginRequiredMixin, TemplateView):
 
 class AdminDashboardView(UserPassesTestMixin, TemplateView):
     template_name = 'dashboard/admin_dashboard.html'
+    raise_exception = True
 
     def test_func(self):
         return self.request.user.is_staff

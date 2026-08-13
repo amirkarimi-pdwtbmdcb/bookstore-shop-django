@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model, login
+from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -41,3 +42,11 @@ class SignUpView(generic.CreateView):
             backend='accounts.backends.UsernameOrPhoneBackend',
         )
         return response
+
+
+class CustomLoginView(LoginView):
+    def form_valid(self, form):
+        self.request.session['guest_cart_session_key'] = self.request.session.session_key
+
+        return super().form_valid(form)
+    

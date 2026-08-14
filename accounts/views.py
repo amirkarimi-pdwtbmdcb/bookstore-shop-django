@@ -42,11 +42,3 @@ class SignUpView(generic.CreateView):
             backend='accounts.backends.UsernameOrPhoneBackend',
         )
         return response
-
-
-class CustomLoginView(LoginView):
-    def form_valid(self, form):
-        self.request.session['guest_cart_session_key'] = self.request.session.session_key
-
-        return super().form_valid(form)
-    

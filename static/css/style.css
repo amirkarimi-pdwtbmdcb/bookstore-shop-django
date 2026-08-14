@@ -1132,12 +1132,20 @@ textarea::placeholder {
   object-fit: cover;
 }
 
+.cart-row__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .cart-row__qty {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   width: 140px;
 }
+
+.text-xs { font-size: 0.75rem; }
 
 .cart-summary {
   position: sticky;
@@ -1156,6 +1164,19 @@ textarea::placeholder {
 
   .cart-row__cover {
     grid-area: cover;
+  }
+
+  .cart-row__info {
+    grid-area: info;
+  }
+
+  .cart-row__qty {
+    grid-area: qty;
+    width: auto;
+  }
+
+  .cart-row__remove {
+    grid-area: remove;
   }
 }
 

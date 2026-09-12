@@ -17,6 +17,10 @@ class CustomUserCreationForm(UserCreationForm):
         model = get_user_model()
         fields = ('username', 'phone_number')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['phone_number'].required = True
+
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:

@@ -21,14 +21,14 @@
   <a href="{{ book.get_absolute_url }}">
     <h4 class="book-card__title">{{ book.title }}</h4>
   </a>
-  {% with author=book.authors.first %}
+  {% with author=book.authors.all|first %}
     {% if author %}<p class="book-card__author">{{ author.name }}</p>{% endif %}
   {% endwith %}
 
   <div class="book-card__footer">
     <div class="book-card__price">
-      {% if book.discount_price %}
-        {{ book.discount_price|price }}
+      {% if book.discount_price and book.discount_price < book.price %}
+        {{ book.current_price|price }}
         <del>{{ book.price|price }}</del>
       {% else %}
         {{ book.price|price }}

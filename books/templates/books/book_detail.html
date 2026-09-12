@@ -43,7 +43,7 @@
       <span class="eyebrow">{{ book.category.name }}</span>
       <h1>{{ book.title }}</h1>
 
-      {% with author=book.authors.first %}
+      {% with author=book.authors.all|first %}
         {% if author %}
           <p class="text-muted mt-2">
             نویسنده: <a href="{% url 'books:author_detail' author.slug %}" class="text-muted" style="text-decoration:underline;">{{ author.name }}</a>
@@ -74,8 +74,8 @@
       </div>
 
       <div class="book-detail__price-row">
-        {% if book.discount_price %}
-          <span class="book-detail__price">{{ book.discount_price|price }}</span>
+        {% if book.discount_price and book.discount_price < book.price %}
+          <span class="book-detail__price">{{ book.current_price|price }}</span>
           <del>{{ book.price|price }}</del>
         {% else %}
           <span class="book-detail__price">{{ book.price|price }}</span>

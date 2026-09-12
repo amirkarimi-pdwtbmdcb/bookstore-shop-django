@@ -45,7 +45,7 @@ class MergeCartOnLoginTests(TestCase):
         self.client.post(reverse('cart:cart_add', kwargs={'book_id': book.id}), {'quantity': quantity})
 
     def _login(self):
-        return self.client.post(reverse('accounts:login'), {
+        return self.client.post(reverse('login'), {
             'username': 'sara', 'password': 'a-strong-pass-1',
         })
 

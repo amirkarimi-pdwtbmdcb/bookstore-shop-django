@@ -31,7 +31,7 @@ class Cart(TimeStampedModel):
 
     @property
     def total_price(self):
-        return sum(item.book.price * item.quantity for item in self.items.all())
+        return sum(item.book.current_price * item.quantity for item in self.items.all())
 
     @property
     def total_items(self):

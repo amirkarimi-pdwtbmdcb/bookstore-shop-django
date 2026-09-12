@@ -81,6 +81,12 @@ class Book(TimeStampedModel):
         max_digits=10, decimal_places=0, null=True, blank=True
     )
 
+    @property
+    def current_price(self):
+        if self.discount_price is not None and self.discount_price < self.price:
+            return self.discount_price
+        return self.price
+
     cover_image = models.ImageField(
         upload_to='books/covers/',
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp']), validate_file_size]

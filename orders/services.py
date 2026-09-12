@@ -11,6 +11,23 @@ def create_order_from_cart(user, cart, shipping_info):
     if not cart.items.exists():
         raise ValidationError('سبد خرید خالیه')
 
+    cart_items = list(cart.items.select_related('book'))
+
+    # قفل کردن ردیف کتاب‌های فیزیکی (SELECT ... FOR UPDATE) تا وقتی این تراکنش
+    # باز است، هیچ سفارش هم‌زمان دیگری نتواند همان موجودی را بخواند/کم کند.
+    # بدون این قفل، دو کاربر می‌توانند هم‌زمان stock=1 را ببینند و هر دو
+    # سفارش را ثبت کنند (overselling).
+    physical_book_ids = [
+        item.book_id for item in cart_items
+        if item.book.book_type == Book.BookType.PHYSICAL
+    ]
+    locked_books = {}
+    if physical_book_ids:
+        locked_books = {
+            book.id: book
+            for book in Book.objects.select_for_update().filter(id__in=physical_book_ids)
+        }
+
     shipping_info = dict(shipping_info)
     coupon_code = shipping_info.pop('coupon_code', None)
 
@@ -38,8 +55,8 @@ def create_order_from_cart(user, cart, shipping_info):
         **shipping_info,
     )
 
-    for cart_item in cart.items.select_related('book'):
-        book = cart_item.book
+    for cart_item in cart_items:
+        book = locked_books.get(cart_item.book_id, cart_item.book)
 
         if book.book_type == Book.BookType.PHYSICAL:
             if book.stock < cart_item.quantity:
@@ -51,7 +68,7 @@ def create_order_from_cart(user, cart, shipping_info):
             order=order,
             book=book,
             quantity=cart_item.quantity,
-            price=book.price,
+            price=book.current_price,
         )
 
     if coupon:

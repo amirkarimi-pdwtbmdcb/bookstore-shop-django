@@ -2,7 +2,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.views import generic
-from django.db.models import Q
+from django.views.decorators.http import require_POST
+from django.db.models import Q, Exists, OuterRef
 
 from .models import Book, Category, Author, Publisher, Review, WishList
 from .forms import ReviewForm
@@ -20,6 +21,11 @@ class BookListView(generic.ListView):
         ).prefetch_related(
         'authors'
         )
+
+        user = self.request.user
+        if user.is_authenticated:
+            wishlist_subquery = WishList.objects.filter(user=user, book=OuterRef('pk'))
+            queryset = queryset.annotate(is_wishlisted=Exists(wishlist_subquery))
 
         search = self.request.GET.get('q')
         if search:
@@ -139,6 +145,7 @@ class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 @login_required
+@require_POST
 def wishlist_toggle(request, book_id):
     book = get_object_or_404(Book, id=book_id, is_active=True)
     item, created = WishList.objects.get_or_create(user=request.user, book=book)

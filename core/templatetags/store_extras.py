@@ -18,6 +18,8 @@ def price(value):
 def in_wishlist(book, user):
     if not getattr(user, 'is_authenticated', False):
         return False
+    if hasattr(book, 'is_wishlisted'):
+        return book.is_wishlisted
     return book.wishlisted_by.filter(user=user).exists()
 
 
